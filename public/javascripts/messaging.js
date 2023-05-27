@@ -12,10 +12,10 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const messaging = async() => await isSupported() && getMessaging(app);
+const messaging = async () => await isSupported() && getMessaging(app);
 const VAPID_KEY = 'BBfDyX4asWZprC3DmTxW_CtyR900wGcpLF89HnrbFRiPlAil02DJD8LFJz9Uh7fT0LYecRCFlzTupwyPDY5ATQ8';
 
-const getFcmToken = async() => {
+const getFcmToken = async () => {
     try {
         const msg = await messaging()
         const token = await getToken(msg, { vapidKey: VAPID_KEY })
@@ -29,7 +29,7 @@ const getFcmToken = async() => {
         throw new Error('Unable to get token')
     }
 }
-const handleTokenButtonClick = async() => {
+const handleTokenButtonClick = async () => {
     try {
         const fcmToken = await getFcmToken();
         console.log(fcmToken);
@@ -48,11 +48,32 @@ async function sendTokenToServer(fcmToken) {
     try {
         const response = await axios.post(baseURL + path, { fcmToken });
         console.log(response);
+        document.location.reload()
+    } catch (err) {
+        throw err;
+    }
+}
+
+async function handleUnsubscribeTokenButtonClick() {
+    const baseURL = 'http://localhost:3000';
+    const path = window.location.pathname + '/unsubscribe';
+
+    try {
+        const response = await axios.get(baseURL + path);
+        console.log(response);
+        document.location.reload()
     } catch (err) {
         throw err;
     }
 }
 
 
-const tokenButton = document.getElementById('sendFcmToken');
-tokenButton.addEventListener('click', handleTokenButtonClick);
+
+const subscribeButton = document.getElementById('subscribeToken');
+const unsubscribeButton = document.getElementById('unsubscribeToken');
+
+if (subscribeButton)
+    subscribeButton.addEventListener('click', handleTokenButtonClick);
+
+if (unsubscribeButton)
+    unsubscribeButton.addEventListener('click', handleUnsubscribeTokenButtonClick);

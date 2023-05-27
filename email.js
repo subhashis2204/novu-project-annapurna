@@ -1,30 +1,17 @@
 require('dotenv').config()
 
-const nodemailer = require('nodemailer')
-const nodemailerSendgrid = require('nodemailer-sendgrid')
-const { createOTPEmailBody, createMessageEmailBody } = require('./emailtemplate')
-const transporter = nodemailer.createTransport(
-    nodemailerSendgrid({
-        apiKey: process.env.SENDGRID_API_KEY
-    })
-)
+const { Novu } = require('@novu/node');
+const novu = new Novu(process.env.NOVU_TOKEN);
 
-module.exports.sendVerifyEmail = async function(emailFrom, emailTo, generatedOTP) {
-    const emailBody = createOTPEmailBody(generatedOTP)
-
-    const emailOptions = {
-        from: emailFrom,
-        to: emailTo,
-        subject: 'Your OTP for food Donation',
-        html: emailBody
+module.exports.sendVerifyEmail = async function (receiverId, generatedOTP) {
+    try {
+        await novu.trigger('send-otp', { to: receiverId, payload: { otp: generatedOTP } });
+    } catch (err) {
+        console.log('some error occured in sending OTP')
     }
-
-    transporter.sendMail(emailOptions)
-        .then(() => console.log('Email Sent'))
-        .catch((err) => console.log(err))
 }
 
-module.exports.sendMessage = async function(replyTo, senderName, messageText) {
+module.exports.sendMessage = async function (replyTo, senderName, messageText) {
 
     const emailBody = createMessageEmailBody(replyTo, senderName, messageText)
 

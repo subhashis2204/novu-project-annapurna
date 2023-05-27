@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const axios = require('axios')
+const { subscribeUser } = require('../utils/subscribeNovu')
 
 const receiverSchema = new mongoose.Schema({
     username: String,
@@ -45,17 +45,14 @@ const receiverSchema = new mongoose.Schema({
         url: String,
         blobName: String
     },
-    fcmTokens: {
-        type: [String],
-        default: []
-    },
+    fcmToken: String,
     subscribed: {
         type: Boolean,
         default: false
     }
 })
 
-receiverSchema.pre('findOneAndUpdate', async function() {
+receiverSchema.pre('findOneAndUpdate', async function () {
     console.log(this._update)
     const address = this._update.receiverAddress
 
@@ -64,37 +61,17 @@ receiverSchema.pre('findOneAndUpdate', async function() {
         key: process.env.GOOGLEMAP_TOKEN
     }
     const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', { params: options })
-        // .then(function (request) {
-        //     console.log(request.data)
-        //     const { lat, lng } = request.data.results[0].geometry.location
-        //     const geometry = {
-        //         type: 'Point',
-        //         coordinates: [lng, lat]
-        //     }
-        //     console.log(this)
-        //     this._update.receiverSchemaAddress.geometry = geometry
-        // })
-        // .catch(err => console.log(err))
 
     const { lat, lng } = response.data.results[0].geometry.location
     const geometry = {
-            type: 'Point',
-            coordinates: [lng, lat]
-        }
-        // console.log(this)
+        type: 'Point',
+        coordinates: [lng, lat]
+    }
     this._update.receiverAddress.geometry = geometry
-
-    console.log(response.data.results[0].geometry)
-        // const geodata = await geocoder.forwardGeocode({
-        //     query: `${address.street}, ${address.city}, ${address.state}, ${address.country}, ${address.zip}`,
-        //     limit: 1
-        // }).send()
-
-    // this._update.receiverSchemaAddress.geometry = geodata.body.features[0].geometry
 })
 
-receiverSchema.post('save', function(doc) {
-    console.log(doc)
+receiverSchema.post('save', async function (receiver) {
+    subscribeUser(receiver._id, receiver.receiverContactDetails.email)
 })
 
 const Receiver = mongoose.model('Receiver', receiverSchema)

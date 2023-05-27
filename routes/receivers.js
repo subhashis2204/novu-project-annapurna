@@ -45,7 +45,7 @@ router.get('/new', (req, res) => {
     res.render('receivers/new')
 })
 
-router.post('/new', upload.single('image'), validateReceiver, catchAsync(async(req, res) => {
+router.post('/new', upload.single('image'), validateReceiver, catchAsync(async (req, res) => {
     const { receiverContactDetails, password } = req.body
     const receiverEmail = receiverContactDetails.email
     const receiver = new Receiver({ username: receiverEmail, ...req.body })
@@ -70,7 +70,7 @@ router.post('/new', upload.single('image'), validateReceiver, catchAsync(async(r
         const newuser = await User.register(user, password)
         const newReceiver = await receiver.save()
 
-        req.login(newuser, function(err) {
+        req.login(newuser, function (err) {
             if (err) { return next(err) }
 
             req.flash('success', 'Created a restaurant successfully')
@@ -83,7 +83,7 @@ router.post('/new', upload.single('image'), validateReceiver, catchAsync(async(r
     }
 }))
 
-router.get('/:id', isLoggedIn, catchAsync(async(req, res) => {
+router.get('/:id', isLoggedIn, catchAsync(async (req, res) => {
     const { id } = req.params
 
     const receiver = await Receiver.findById(id)
@@ -94,45 +94,45 @@ router.get('/:id', isLoggedIn, catchAsync(async(req, res) => {
     console.log(today)
 
     const nearestRestaurants = await Restaurant.aggregate([{
-            $geoNear: {
-                near: receiverPoint,
-                distanceField: 'distance',
-                spherical: true
-            }
-        },
-        {
-            $lookup: {
-                from: 'donors',
-                localField: '_id',
-                foreignField: 'restaurantId',
-                as: 'result'
-            }
-        },
-        {
-            $unwind: '$result'
-        },
-        {
-            $match: {
-                'result.date': today,
-                'result.donating': true,
-                'result.fulfilled': false
-            }
-        },
-        {
-            $project: {
-                restaurantName: 1,
-                distance: {
-                    $round: [{ $divide: ['$distance', 1000] }, 2]
-                },
-                fullfilled: '$result.fulfilled'
-            }
+        $geoNear: {
+            near: receiverPoint,
+            distanceField: 'distance',
+            spherical: true
         }
+    },
+    {
+        $lookup: {
+            from: 'donors',
+            localField: '_id',
+            foreignField: 'restaurantId',
+            as: 'result'
+        }
+    },
+    {
+        $unwind: '$result'
+    },
+    {
+        $match: {
+            'result.date': today,
+            'result.donating': true,
+            'result.fulfilled': false
+        }
+    },
+    {
+        $project: {
+            restaurantName: 1,
+            distance: {
+                $round: [{ $divide: ['$distance', 1000] }, 2]
+            },
+            fullfilled: '$result.fulfilled'
+        }
+    }
     ])
 
     res.render('receivers/show', { receiver, nearestRestaurants })
 }))
 
-router.get('/:id/edit', isLoggedIn, isReceiver, catchAsync(async(req, res, next) => {
+router.get('/:id/edit', isLoggedIn, isReceiver, catchAsync(async (req, res, next) => {
     const { id } = req.params
     const receiver = await Receiver.findById(id)
 
@@ -144,7 +144,7 @@ router.get('/:id/edit', isLoggedIn, isReceiver, catchAsync(async(req, res, next)
     res.render('receivers/edit', { receiver })
 }))
 
-router.post('/:id/edit', isLoggedIn, isReceiver, upload.single('image'), validateReceiverUpdate, catchAsync(async(req, res, next) => {
+router.post('/:id/edit', isLoggedIn, isReceiver, upload.single('image'), validateReceiverUpdate, catchAsync(async (req, res, next) => {
     const { id } = req.params
     const receiver = await Receiver.findById(id)
 
@@ -155,13 +155,13 @@ router.post('/:id/edit', isLoggedIn, isReceiver, upload.single('image'), validat
         await blobClient.delete();
     }
 
-    const newReceiver = await Receiver.findOneAndUpdate({ _id: id }, {...req.body }, { new: true })
+    const newReceiver = await Receiver.findOneAndUpdate({ _id: id }, { ...req.body }, { new: true })
 
     // console.log(newReceiver)
     res.redirect('/receivers/' + id)
 }))
 
-router.delete('/:id', isLoggedIn, isReceiver, catchAsync(async(req, res) => {
+router.delete('/:id', isLoggedIn, isReceiver, catchAsync(async (req, res) => {
     const { id } = req.params
 
     const receiver = await Receiver.findByIdAndDelete(id)
@@ -181,12 +181,33 @@ router.delete('/:id', isLoggedIn, isReceiver, catchAsync(async(req, res) => {
     res.redirect('/')
 }))
 
-router.post('/:id/subscribe', async(req, res) => {
+router.post('/:id/subscribe', async (req, res) => {
     const { id } = req.params
     const { fcmToken } = req.body
 
-    console.log(fcmToken, id)
-    res.send('hello')
+    console.log(fcmToken)
+
+    const receiver = await Receiver.findById(id)
+    receiver.subscribed = true
+    receiver.fcmToken = fcmToken
+
+    receiver.save()
+
+    console.log(receiver)
+    res.redirect('/receivers/' + id)
+})
+
+router.get('/:id/unsubscribe', async (req, res) => {
+    const { id } = req.params
+
+    const receiver = await Receiver.findById(id)
+    receiver.subscribed = false
+    receiver.fcmToken = null
+
+    receiver.save()
+
+    console.log(receiver)
+    res.redirect('/receivers/' + id)
 })
 
 module.exports = router
