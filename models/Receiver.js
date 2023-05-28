@@ -52,6 +52,8 @@ const receiverSchema = new mongoose.Schema({
     }
 })
 
+receiverSchema.index({ 'receiverAddress.geometry': '2dsphere' });
+
 receiverSchema.pre('findOneAndUpdate', async function () {
     console.log(this._update)
     const address = this._update.receiverAddress

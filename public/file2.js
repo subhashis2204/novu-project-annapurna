@@ -1,3 +1,6 @@
+importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
+
 const firebaseConfig = {
     apiKey: "AIzaSyAP4_vdF-y8Gw0UkTCQa4KR5xma9LcsTiQ",
     authDomain: "project-annapurna-d3a35.firebaseapp.com",
@@ -8,14 +11,19 @@ const firebaseConfig = {
     measurementId: "G-B0R2XBZNMZ"
 };
 
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
+
 const VAPID_KEY = 'BBfDyX4asWZprC3DmTxW_CtyR900wGcpLF89HnrbFRiPlAil02DJD8LFJz9Uh7fT0LYecRCFlzTupwyPDY5ATQ8';
 
-messaging.onMessage(payload => {
+messaging.onMessage((payload) => {
     console.log('Message received. ', payload);
-    new Notification(payload.notification.title, payload.notification);
+
+    const notificationTitle = payload.notification.title;
+    const notificationOptions = {
+        body: payload.notification.body,
+    };
+    new Notification(notificationTitle, notificationOptions);
 });
 
 const getFcmToken = async() => {
@@ -42,6 +50,7 @@ const handleTokenButtonClick = async() => {
     }
 }
 
+
 async function sendTokenToServer(fcmToken) {
     const baseURL = 'http://localhost:3000';
     const path = window.location.pathname + '/subscribe';
@@ -62,7 +71,7 @@ async function handleUnsubscribeTokenButtonClick() {
     try {
         const response = await axios.get(baseURL + path);
         console.log(response);
-        document.location.reload()
+        window.location.reload()
     } catch (err) {
         throw err;
     }

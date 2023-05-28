@@ -1,12 +1,4 @@
 const mongoose = require('mongoose')
-const Donor = require('./Donor')
-
-const axios = require('axios')
-const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding')
-
-const mapBoxToken = 'pk.eyJ1Ijoic3ViaGFzaGlzMjIwNCIsImEiOiJjbDhiNG9rYmcwbjRhM3ZvNXc0cnV6ODdqIn0.naaVIZeyq2jGvjtUlFZINA'
-const geocoder = mbxGeocoding({ accessToken: mapBoxToken })
-
 
 const restaurantSchema = new mongoose.Schema({
     username: String,
@@ -53,15 +45,7 @@ const restaurantSchema = new mongoose.Schema({
 
 restaurantSchema.index({ 'restaurantAddress.geometry': '2dsphere' });
 
-// restaurantSchema.pre('save', function (next) {
-//     // this.restaurantWebsite = null
-
-//     console.log(this)
-//     // next()
-//     next(new Error('some error occured'))
-// })
-
-restaurantSchema.pre('findOneAndUpdate', async function() {
+restaurantSchema.pre('findOneAndUpdate', async function () {
     console.log(this._update)
     const address = this._update.restaurantAddress
 

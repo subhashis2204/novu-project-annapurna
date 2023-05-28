@@ -1,7 +1,6 @@
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
 
-
 const firebaseConfig = {
     apiKey: "AIzaSyAP4_vdF-y8Gw0UkTCQa4KR5xma9LcsTiQ",
     authDomain: "project-annapurna-d3a35.firebaseapp.com",
@@ -13,16 +12,9 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
-// Retrieve firebase messaging
 const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage(payload => {
+messaging.onBackgroundMessage((payload) => {
     console.log('Received background message ', payload);
-
-    const notificationTitle = payload.notification.title;
-    const notificationOptions = {
-        body: payload.notification.body,
-    };
-    self.registration.showNotification(notificationTitle, notificationOptions);
+    self.registration.showNotification(payload.notification.title, payload.notification.body);
 });

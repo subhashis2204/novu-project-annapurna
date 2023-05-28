@@ -47,7 +47,12 @@ const sessionConfig = {
 }
 
 app.engine('ejs', ejsMate)
-app.use(express.static('public'))
+app.use(express.static('public', {
+    // Enable logging for each file sent
+    setHeaders: (res, path) => {
+        console.log('File sent:', path);
+    }
+}))
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
 app.use(express.urlencoded({ extended: true }));

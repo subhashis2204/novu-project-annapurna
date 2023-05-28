@@ -1,4 +1,7 @@
 const mongoose = require('mongoose')
+const Restaurant = require('./Restaurant')
+const Receiver = require('./Receiver')
+const { sendDonationNotification } = require('../utils/subscribeNovu')
 
 const donorSchema = new mongoose.Schema({
     restaurantId: {
@@ -21,6 +24,31 @@ const donorSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
+})
+
+donorSchema.post('save', async function (doc) {
+    const restaurant = await Restaurant.findById(doc.restaurantId)
+    const location = restaurant.restaurantAddress.geometry
+
+    const targetReceivers = await Receiver.aggregate([{
+        $geoNear: {
+            near: location,
+            distanceField: "distance",
+            maxDistance: 10000,
+            spherical: true
+        }
+    },
+    {
+        $project: {
+            _id: 1,
+            subscribed: 1,
+            fcmToken: 1
+        }
+    }
+    ])
+
+    sendDonationNotification(restaurant.restaurantName, targetReceivers)
+
 })
 
 const Donor = mongoose.model('Donor', donorSchema)
