@@ -18,7 +18,7 @@ messaging.onMessage(payload => {
     new Notification(payload.notification.title, payload.notification);
 });
 
-const getFcmToken = async() => {
+const getFcmToken = async () => {
     try {
         const token = await messaging.getToken({ vapidKey: VAPID_KEY })
         if (token) return token;
@@ -31,7 +31,7 @@ const getFcmToken = async() => {
         throw new Error('Unable to get token')
     }
 }
-const handleTokenButtonClick = async() => {
+const handleTokenButtonClick = async () => {
     try {
         const fcmToken = await getFcmToken();
         console.log(fcmToken);
@@ -42,8 +42,10 @@ const handleTokenButtonClick = async() => {
     }
 }
 
+let baseURL = 'https://novu-project-annapurna.azurewebsites.net';
+
+
 async function sendTokenToServer(fcmToken) {
-    const baseURL = 'http://localhost:3000';
     const path = window.location.pathname + '/subscribe';
 
     try {
@@ -56,7 +58,6 @@ async function sendTokenToServer(fcmToken) {
 }
 
 async function handleUnsubscribeTokenButtonClick() {
-    const baseURL = 'http://localhost:3000';
     const path = window.location.pathname + '/unsubscribe';
 
     try {
