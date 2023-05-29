@@ -34,17 +34,25 @@ node.js, express, EJS, mongodb, javascript, html, css, tailwindCSS
 
 When a restaurant clicks on "donate" button. The application performs a GeoNear query in mongodb and find the NGOs that are within some radius (here, 10 km) and send out a push notification to them that a restaurant is donating.
 
+![Screenshot (2224)](https://github.com/subhashis2204/novu-project-annapurna/assets/76895635/a0e1177b-08d2-457b-b5bd-226216ac2612)
+
+When the notification is clicked, the person is redirected to the restaurant page which seems like this.
+
 ![Screenshot (6)](https://github.com/subhashis2204/novu-project-annapurna/assets/76895635/e1fabd37-2b38-4012-8b3c-1fa40df5ef08)
 
 Every NGO has an option to subscribe or unsubscribe to the push notifications.
 
 ![image](https://github.com/subhashis2204/novu-project-annapurna/assets/76895635/ff9f00ce-5fc7-4e0b-96ed-02e119bf0764)
 
-When an NGO claims a donation he receives an email containing the OTP for verification. This OTP is required by the restaurants at the time of donation for validation purpose.
+When an NGO claims a donation he receives an email notification containing the OTP for verification. This OTP is required by the restaurants at the time of donation for validation purpose.
     
 If an NGO claims a donation the restaurant screen changes like this
 
 ![image](https://github.com/subhashis2204/novu-project-annapurna/assets/76895635/1825cb1a-be71-45b0-9ff7-ef3a476aa008)
+
+In the contact us page, when someone asks a message it sends out an email notification to the support team to which they can respond directly. 
+
+All the novu related functions are placed in the ``utils/subscribeNovu.js ``
 
 This project is just an attempt to make our world a better place.
 </p>
