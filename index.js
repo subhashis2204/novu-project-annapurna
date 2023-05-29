@@ -17,6 +17,7 @@ const methodOverride = require('method-override')
 const User = require('./models/User')
 const CatchAsync = require('./utils/CatchAsync')
 const { sendMessage, sendMessageNodemailer } = require('./email')
+const { sendContactMessage } = require('./utils/subscribeNovu')
 const port = process.env.PORT || 3000;
 
 mongoose.set('strictQuery', false);
@@ -101,17 +102,17 @@ app.get('/contacts', (req, res) => {
 
 app.post('/contacts', CatchAsync(async (req, res) => {
     const { name, email, message } = req.body
-    await sendMessage(email, name, message)
-        .then(() => {
-            console.log('Send Successfully')
-            req.flash('success', 'Message has been delivered successfully')
-            res.redirect('/')
-        })
-        .catch((err) => {
-            console.log(err)
-            req.flash('error', 'Could not deliver message')
-            res.redirect('/contacts')
-        })
+
+    try {
+        sendContactMessage(message, email, name)
+        console.log('Send Successfully')
+        req.flash('success', 'Message has been delivered successfully')
+        res.redirect('/')
+    } catch (err) {
+        console.log(err)
+        req.flash('error', 'Could not deliver message')
+        res.redirect('/contacts')
+    }
 }))
 
 app.use('/restaurants', restaurantRouter)

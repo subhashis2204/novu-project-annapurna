@@ -47,7 +47,7 @@ donorSchema.post('save', async function (doc) {
     }
     ])
 
-    sendDonationNotification(restaurant.restaurantName, targetReceivers)
+    sendDonationNotification(restaurant.restaurantName, restaurant._id, targetReceivers)
 
 })
 

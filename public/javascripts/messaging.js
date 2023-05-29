@@ -1,3 +1,5 @@
+const { default: axios } = require("axios");
+
 const firebaseConfig = {
     apiKey: "AIzaSyAP4_vdF-y8Gw0UkTCQa4KR5xma9LcsTiQ",
     authDomain: "project-annapurna-d3a35.firebaseapp.com",
