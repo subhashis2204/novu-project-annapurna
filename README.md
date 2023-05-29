@@ -25,28 +25,26 @@ node.js, express, EJS, mongodb, javascript, html, css, tailwindCSS
 
 <h3>Screenshoot</h3>
 
-![Screenshot (2)](https://github.com/subhashis2204/novu-project-annapurna/assets/76895635/c223c522-d750-4e6a-86e5-4de3d9dc343f)
+![Screenshot (2)](https://github.com/subhashis2204/novu-project-annapurna/assets/76895635/8d7abf30-e92e-4485-a8e3-6c54eb91735b)
 
-![Screenshot (3)](https://github.com/subhashis2204/novu-project-annapurna/assets/76895635/ea5770d0-bc26-48a7-9023-f59db1f204fb)
+![Screenshot (3)](https://github.com/subhashis2204/novu-project-annapurna/assets/76895635/56e105b1-85cc-4e81-9653-f14efd7a8888)
 
 <h3>Description</h3>
 <p>Via this project I have tried to provide a technology platform to the restaurant and NGOs so that they can benefit from each other. There are many advanced features of the application like authentication, OTP verification and very recently push message notification.
 
 When a restaurant clicks on "donate" button. The application performs a GeoNear query in mongodb and find the NGOs that are within some radius (here, 10 km) and send out a push notification to them that a restaurant is donating.
 
-![image](https://github.com/subhashis2204/novu-project-annapurna/assets/76895635/9f84ccf9-5b9f-4a9e-8a6d-18a8c4725ae6)
+![Screenshot (6)](https://github.com/subhashis2204/novu-project-annapurna/assets/76895635/e1fabd37-2b38-4012-8b3c-1fa40df5ef08)
 
 Every NGO has an option to subscribe or unsubscribe to the push notifications.
 
-![Screenshot (5)](https://github.com/subhashis2204/novu-project-annapurna/assets/76895635/2da2b43e-eca7-4f2a-9d98-c4cd02bcccff)
+![image](https://github.com/subhashis2204/novu-project-annapurna/assets/76895635/ff9f00ce-5fc7-4e0b-96ed-02e119bf0764)
 
 When an NGO claims a donation he receives an email containing the OTP for verification. This OTP is required by the restaurants at the time of donation for validation purpose.
-
-![Screenshot (6)](https://github.com/subhashis2204/novu-project-annapurna/assets/76895635/955afba9-831c-4ee5-af4e-648aac2a62a6)
-
+    
 If an NGO claims a donation the restaurant screen changes like this
 
-![image](https://github.com/subhashis2204/novu-project-annapurna/assets/76895635/f3a4e34c-8dd3-4dcf-bada-a5e3497d190f)
+![image](https://github.com/subhashis2204/novu-project-annapurna/assets/76895635/1825cb1a-be71-45b0-9ff7-ef3a476aa008)
 
 This project is just an attempt to make our world a better place.
 </p>
